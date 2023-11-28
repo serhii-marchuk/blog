@@ -1,0 +1,8 @@
+*
+!.gitignore
+!go.mod
+!LICENSE
+!README.MD
+!cmd
+!cmd/blog
+!cmd/**/*.go
