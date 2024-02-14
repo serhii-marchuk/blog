@@ -1,0 +1,100 @@
+:root {
+    --fc-main: #787878;
+    --font-color-navbar: #c8c8c8;
+    --font-color-navbar-hover: #dc1414;
+    --color-active-elem: #dc1414;
+}
+
+body {
+    color: var(--fc-main);
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 300;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    min-height: 100vh;
+}
+
+.main_container {
+    display: flex;
+    flex-flow: row nowrap;
+    min-height: calc(100vh - 3.4em);
+}
+
+.navbar {
+    display: flex;
+        flex-flow: column nowrap;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    line-height: 2em;
+    padding: 3em 1em 1em 2em;
+    position: fixed;
+        left: 0;
+        top: 0;
+}
+
+.navbar a {
+    border-bottom: 1px solid rgba(255,255,255, 1);
+    color: var(--font-color-navbar);
+    text-decoration: none;
+    padding: 0 .5em;
+}
+
+.navbar .active_page {
+    border-bottom: 1px solid var(--fc-main);
+    color: var(--fc-main);
+    font-weight: 700;
+}
+
+.navbar a:hover {
+    color: var(--font-color-navbar-hover);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+main {
+    margin: 1em 2em 0 10em;
+    width: 100vw;
+}
+
+main h1 {
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 700;
+    font-size: 2em;
+    margin: 0.5em 2em ;
+}
+
+main h2 {
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 700;
+    font-size: 1.2em;
+    margin: 0.5em 0;
+}
+
+.error_container {
+    display: flex;
+        justify-content: center;
+        align-items: center;
+    height: 100%;
+}
+
+.error_text {
+    color: #dc1414;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+}
+
+footer {
+    border-top: 1px solid #dc1414;
+    display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+    font-size: .8em;
+    line-height: 1em;
+    margin-top: 1em;
+    padding: 1.2em 2em;
+}
+
+footer a:hover svg {
+    fill: #dc1414;
+}

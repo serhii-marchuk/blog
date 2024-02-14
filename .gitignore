@@ -1,8 +1,6 @@
-*
-!.gitignore
-!go.mod
-!LICENSE
-!README.MD
-!cmd
-!cmd/blog
-!cmd/**/*.go
+.idea
+.DS_Store
+db/.data
+web/.DS_STORE
+web/assets/.DS_STORE
+configs/.env

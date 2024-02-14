@@ -1,0 +1,44 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Serhii Marchuk</title>
+    <link rel="stylesheet" href="/assets/css/reset.css"/>
+    <link rel="stylesheet" href="/assets/css/main.css"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="main_container">
+        <div class="navbar">
+            <a {{if eq (index . "page") "home"}} class="active_page" {{end}} href="/">HOME</a>
+            <a {{if eq (index . "page") "blog"}} class="active_page" {{end}} href="/blog">BLOG</a>
+            <a {{if eq (index . "page") "about"}} class="active_page" {{end}} href="/about">ABOUT</a>
+            <a {{if eq (index . "page") "contact"}} class="active_page" {{end}} href="/contact">CONTACT</a>
+        </div>
+        <main>{{ template "body" . }}</main>
+    </div>
+    <footer>
+        <div>Serhii Marchuk. Copyright © 2023. All rights are reserved.</div>
+        <div>
+            <a href="http://linkedin.com/in/serhii-marchuk-05919a163" target="_blank">
+                <svg fill="#787878"  width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <title>linkedin</title>
+                    <path d="M20.452 20.45h-3.56v-5.57c0-1.327-.022-3.036-1.85-3.036-1.851 0-2.134 1.448-2.134 2.941v5.665H9.352V8.997h3.413v1.566h.049c.474-.9 1.636-1.85 3.367-1.85 3.605 0 4.27 2.371 4.27 5.456v6.281zM5.339 7.433a2.063 2.063 0 1 1 0-4.13 2.065 2.065 0 0 1 0 4.13zM7.12 20.45H3.557V8.997H7.12V20.45zM23 0H1a1 1 0 0 0-1 1v22a1 1 0 0 0 1 1h22a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1z" fill-rule="evenodd"/>
+                </svg>
+            </a>
+            <a href="https://github.com/serhii-marchuk" target="_blank">
+                <svg fill="#787878" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+                    <title>github</title>
+                    <path d="M10.999 0C4.926 0 0 4.925 0 11c0 4.86 3.152 8.983 7.523 10.437.55.102.75-.238.75-.53 0-.26-.009-.952-.014-1.87-3.06.664-3.706-1.475-3.706-1.475-.5-1.27-1.221-1.61-1.221-1.61-.999-.681.075-.668.075-.668 1.105.078 1.685 1.134 1.685 1.134.981 1.68 2.575 1.195 3.202.914.1-.71.384-1.195.698-1.47-2.442-.278-5.01-1.222-5.01-5.437 0-1.2.428-2.183 1.132-2.952-.114-.278-.491-1.397.108-2.91 0 0 .923-.297 3.025 1.127A10.536 10.536 0 0 1 11 5.32c.935.004 1.876.125 2.754.37 2.1-1.424 3.022-1.128 3.022-1.128.6 1.514.223 2.633.11 2.911.705.769 1.13 1.751 1.13 2.952 0 4.226-2.572 5.156-5.022 5.428.395.34.747 1.01.747 2.037 0 1.47-.014 2.657-.014 3.017 0 .295.199.637.756.53C18.851 19.979 22 15.859 22 11c0-6.075-4.926-11-11.001-11" fill-rule="evenodd"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+{{ end }}
