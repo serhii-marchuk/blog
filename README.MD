@@ -3,9 +3,14 @@ This repository contains code for my personal blog
 
 ## How to run
 Clone repository
-
-```bash
+```
 git clone git@github.com:serhii-marchuk/blog.git
+```
+
+## How to manage migrations
+Create migration
+```
+migrate create -ext sql -dir db/migrations -seq {{table_name}}
 ```
 
 ## License

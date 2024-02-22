@@ -4,7 +4,7 @@ build:
 
 .PHONY: up
 up:
-	docker compose up -d
+	docker compose up -d --build
 
 .PHONY: down
 down:
@@ -12,8 +12,8 @@ down:
 
 .PHONY: migrate-up
 migrate-up:
-	migrate -path ./db/migration -database "postgresql://app:app@localhost:5432/app?sslmode=disable" -verbose up
+	@go run cmd/main.go migrate up
 
 .PHONY: migrate-down
 migrate-down:
-	migrate -path ./db/migration -database "postgresql://app:app@localhost:5432/app?sslmode=disable" -verbose down
+	@go run cmd/main.go migrate down

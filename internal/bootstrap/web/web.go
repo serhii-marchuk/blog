@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/serhii-marchuk/blog/internal/ports/web"
 	"go.uber.org/fx"
@@ -11,6 +12,16 @@ import (
 	"net/http"
 	"time"
 )
+
+var pages = []string{
+	"home",
+	"about",
+	"blog",
+	"contact",
+	"webhook",
+}
+
+var btp = "web/templates/base.html"
 
 func NewWebServer() *echo.Echo {
 	return echo.New()
@@ -23,13 +34,16 @@ func Setup(
 ) {
 	e.HideBanner = true
 
-	r.AddTemplate("home", template.Must(template.ParseFiles("web/content/home.html", "web/templates/base.html")))
-	r.AddTemplate("about", template.Must(template.ParseFiles("web/content/about.html", "web/templates/base.html")))
-	r.AddTemplate("blog", template.Must(template.ParseFiles("web/content/blog.html", "web/templates/base.html")))
-	r.AddTemplate("contact", template.Must(template.ParseFiles("web/content/contact.html", "web/templates/base.html")))
+	for _, pn := range pages {
+		r.AddTemplate(pn, template.Must(template.ParseFiles(GetTemplate(pn), btp)))
+	}
 
 	e.Renderer = r
 	h.Setup(e)
+}
+
+func GetTemplate(page string) string {
+	return fmt.Sprintf("web/content/%s.html", page)
 }
 
 func Start(lc fx.Lifecycle, e *echo.Echo) {

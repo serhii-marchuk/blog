@@ -10,6 +10,8 @@ services:
       - "8080:8080"
     volumes:
       - ./configs:/app/configs
+    command: "app web:start"
+    depends_on: [postgres]
   postgres:
     image: postgres:latest
     container_name: "blog-db"
@@ -23,7 +25,7 @@ services:
       - "5432:5432/tcp"
     restart: on-failure
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "app", "-U", "app"  ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "app", "-U", "app" ]
       interval: 5s
       timeout: 5s
       retries: 5
