@@ -5,14 +5,14 @@ import (
 	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/web"
 	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log/slog"
 	"os"
+
+	"gorm.io/gorm"
 )
 
-func NewDb(l *web.AppLogger) *gorm.DB {
-	cfg := configs.NewDbConfig(l)
-	db, err := gorm.Open(postgres.Open(cfg.GetDns()), &gorm.Config{})
+func NewDb(l *web.AppLogger, cfg *configs.Configs) *gorm.DB {
+	db, err := gorm.Open(postgres.Open(cfg.Database.GetDns()), &gorm.Config{})
 
 	if err != nil {
 		l.Logger.LogAttrs(context.Background(), slog.LevelError, "Error init DB", slog.String("err", err.Error()))

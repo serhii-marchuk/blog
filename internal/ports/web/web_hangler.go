@@ -3,14 +3,16 @@ package web
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"net/http"
 )
 
 type WebHandler struct {
+	Pages []configs.NavItem
 }
 
-func NewWebHandler() *WebHandler {
-	return &WebHandler{}
+func NewWebHandler(cfg *configs.WebCfg) *WebHandler {
+	return &WebHandler{Pages: cfg.NavCfg.NavBar}
 }
 
 func (h *WebHandler) Setup(e *echo.Echo) {
@@ -25,7 +27,15 @@ func (h *WebHandler) Page(c echo.Context) error {
 		page = "home"
 	}
 
-	return c.Render(http.StatusOK, page, map[string]interface{}{"page": page})
+	for k, item := range h.Pages {
+		if item.Name == page {
+			h.Pages[k].Active = true
+		} else {
+			h.Pages[k].Active = false
+		}
+	}
+
+	return c.Render(http.StatusOK, page, map[string]interface{}{"pages": &h.Pages})
 }
 
 func (h *WebHandler) Assets(c echo.Context) error {

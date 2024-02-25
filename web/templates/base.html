@@ -15,10 +15,9 @@
 <body>
     <div class="main_container">
         <div class="navbar">
-            <a {{if eq (index . "page") "home"}} class="active_page" {{end}} href="/">HOME</a>
-            <a {{if eq (index . "page") "blog"}} class="active_page" {{end}} href="/blog">BLOG</a>
-            <a {{if eq (index . "page") "about"}} class="active_page" {{end}} href="/about">ABOUT</a>
-            <a {{if eq (index . "page") "contact"}} class="active_page" {{end}} href="/contact">CONTACT</a>
+            {{range index . "pages"}}
+                <a {{if .Active }} class="active_page" {{end}} href={{ .Uri }}>{{ .DisplayName }}</a>
+            {{end}}
         </div>
         <main>{{ template "body" . }}</main>
     </div>

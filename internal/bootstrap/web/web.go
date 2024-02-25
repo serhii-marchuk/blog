@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"github.com/serhii-marchuk/blog/internal/ports/web"
 	"go.uber.org/fx"
 	"html/template"
@@ -12,16 +13,6 @@ import (
 	"net/http"
 	"time"
 )
-
-var pages = []string{
-	"home",
-	"about",
-	"blog",
-	"contact",
-	"webhook",
-}
-
-var btp = "web/templates/base.html"
 
 func NewWebServer() *echo.Echo {
 	return echo.New()
@@ -31,26 +22,31 @@ func Setup(
 	e *echo.Echo,
 	r *TemplateRenderer,
 	h *web.WebHandler,
+	webCfg *configs.WebCfg,
 ) {
 	e.HideBanner = true
 
-	for _, pn := range pages {
-		r.AddTemplate(pn, template.Must(template.ParseFiles(GetTemplate(pn), btp)))
+	for _, item := range webCfg.NavCfg.NavBar {
+		r.AddTemplate(
+			item.Name,
+			template.Must(
+				template.ParseFiles(
+					fmt.Sprintf("web/content/%s.html", item.Name),
+					webCfg.NavCfg.BaseTemplatePath,
+				),
+			),
+		)
 	}
 
 	e.Renderer = r
 	h.Setup(e)
 }
 
-func GetTemplate(page string) string {
-	return fmt.Sprintf("web/content/%s.html", page)
-}
-
-func Start(lc fx.Lifecycle, e *echo.Echo) {
+func Start(lc fx.Lifecycle, e *echo.Echo, cfg *configs.Configs) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				if err := e.Start(":80"); !errors.Is(err, http.ErrServerClosed) {
+				if err := e.Start(fmt.Sprintf(":%d", cfg.WebPort)); !errors.Is(err, http.ErrServerClosed) {
 					slog.Error(err.Error())
 				}
 			}()

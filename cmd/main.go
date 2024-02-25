@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"github.com/serhii-marchuk/blog/internal/bootstrap"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/web"
@@ -22,17 +21,12 @@ var commands = []*cli.Command{
 				Aliases: []string{"d"},
 				Usage:   "Point the direction of migration",
 			},
-			&cli.IntFlag{
-				Name:    "count",
-				Aliases: []string{"c"},
-				Usage:   "Count of the migration ",
-			},
 		},
 		Action: func(cCtx *cli.Context) error {
 			l := web.NewAppLogger()
-			cfg := configs.NewDbConfig(l)
+			cfg := configs.NewConfigs()
 			d := cCtx.String("direction")
-			bootstrap.NewMigrator(d).RunDbMigration(cfg, l)
+			bootstrap.NewMigrator(d).RunDbMigration(&cfg.Database, l)
 
 			return nil
 		},
@@ -42,8 +36,13 @@ var commands = []*cli.Command{
 		Usage: "start web server",
 		Action: func(cCtx *cli.Context) error {
 			fx.New(
+				fx.Provide(func() *configs.Configs {
+					return configs.NewConfigs()
+				}),
+				fx.Provide(func() *configs.WebCfg {
+					return configs.NewWebCfg()
+				}),
 				fx.Provide(web.NewAppLogger),
-				fx.Provide(bootstrap.NewDb),
 				fx.Provide(web.NewWebServer),
 				fx.Provide(web.NewRenderer),
 				fx.Provide(webHandl.NewWebHandler),
@@ -59,10 +58,6 @@ var commands = []*cli.Command{
 
 func main() {
 	app := &cli.App{Commands: commands}
-
-	if godotenv.Load("./configs/.env") != nil {
-		os.Exit(0)
-	}
 
 	if err := app.Run(os.Args); err != nil {
 		fmt.Println("Something went wrong with app!")

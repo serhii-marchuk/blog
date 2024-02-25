@@ -1,7 +1,7 @@
 :root {
     --fc-main: #787878;
-    --font-color-navbar: #c8c8c8;
-    --font-color-navbar-hover: #dc1414;
+    --fc-navbar: #aaaaaa;
+    --fc-active: #dc1414;
     --color-active-elem: #dc1414;
 }
 
@@ -25,34 +25,36 @@ body {
         flex-flow: column nowrap;
     font-family: 'Roboto', sans-serif;
     font-weight: 300;
-    line-height: 2em;
-    padding: 3em 1em 1em 2em;
+    line-height: 1.8em;
+    padding: 3em 2em 1em 2em;
     position: fixed;
         left: 0;
         top: 0;
 }
 
 .navbar a {
-    border-bottom: 1px solid rgba(255,255,255, 1);
-    color: var(--font-color-navbar);
+    border-left: 3px solid rgba(255,255,255, 1);
+    color: var(--fc-navbar);
     text-decoration: none;
     padding: 0 .5em;
 }
 
 .navbar .active_page {
-    border-bottom: 1px solid var(--fc-main);
+    border-left: 3px solid var(--fc-main);
     color: var(--fc-main);
-    font-weight: 700;
+    font-weight: 500;
+    margin: .6em 0;
 }
 
 .navbar a:hover {
-    color: var(--font-color-navbar-hover);
+    border-left: 3px solid var(--fc-active);
+    color: var(--fc-active);
     text-decoration: none;
     cursor: pointer;
 }
 
 main {
-    margin: 1em 2em 0 10em;
+    margin: 1em 2em 0 11.5em;
     width: 100vw;
 }
 
