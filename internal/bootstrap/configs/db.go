@@ -1,12 +1,6 @@
 package configs
 
-import (
-	"context"
-	"fmt"
-	"github.com/caarlos0/env/v10"
-	"github.com/serhii-marchuk/blog/internal/bootstrap/web"
-	"log/slog"
-)
+import "fmt"
 
 type DbConfig struct {
 	Host          string `env:"DB_HOST"`
@@ -16,15 +10,6 @@ type DbConfig struct {
 	Port          int    `env:"DB_PORT"`
 	SSLMode       string `env:"DB_SSL_MODE"`
 	MigrationPath string `env:"DB_MIGRATIONS_PATH"`
-}
-
-func NewDbConfig(l *web.AppLogger) *DbConfig {
-	cfg := &DbConfig{}
-	if err := env.Parse(cfg); err != nil {
-		l.Logger.LogAttrs(context.Background(), slog.LevelError, "Error read .env file", slog.String("err", err.Error()))
-	}
-
-	return cfg
 }
 
 func (pc *DbConfig) GetDns() string {
