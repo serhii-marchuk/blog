@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/serhii-marchuk/blog/internal/bootstrap"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
+	"github.com/serhii-marchuk/blog/internal/bootstrap/constructors"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/web"
 	webHandl "github.com/serhii-marchuk/blog/internal/ports/web"
 	"github.com/urfave/cli/v2"
@@ -43,6 +44,7 @@ var commands = []*cli.Command{
 					return configs.NewWebCfg()
 				}),
 				fx.Provide(web.NewAppLogger),
+				fx.Provide(constructors.NewRedisClient),
 				fx.Provide(web.NewWebServer),
 				fx.Provide(web.NewRenderer),
 				fx.Provide(webHandl.NewWebHandler),
