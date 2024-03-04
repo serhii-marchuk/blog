@@ -11,6 +11,7 @@ type Configs struct {
 	WebPort  int `env:"WEB_PORT"`
 	RestPort int `env:"REST_PORT"`
 	Database DbConfig
+	Redis    RedisCfg
 }
 
 func NewConfigs() *Configs {
