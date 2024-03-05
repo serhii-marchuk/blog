@@ -31,12 +31,7 @@ func Setup(
 	for _, item := range webCfg.NavCfg.NavBar {
 		r.AddTemplate(
 			item.Name,
-			template.Must(
-				template.ParseFiles(
-					fmt.Sprintf("web/content/%s.html", item.Name),
-					webCfg.NavCfg.BaseTemplatePath,
-				),
-			),
+			template.Must(template.ParseFiles(item.ContentFile, webCfg.NavCfg.BaseTemplatePath)),
 		)
 	}
 
@@ -45,15 +40,18 @@ func Setup(
 		LogStatus:   true,
 		LogURI:      true,
 		LogError:    true,
+		LogMethod:   true,
 		HandleError: true, // forwards error to the global error handler, so it can decide appropriate status code
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
 			if v.Error == nil {
 				logger.LogAttrs(context.Background(), slog.LevelInfo, "REQUEST",
+					slog.String("method", v.Method),
 					slog.String("uri", v.URI),
 					slog.Int("status", v.Status),
 				)
 			} else {
 				logger.LogAttrs(context.Background(), slog.LevelError, "REQUEST_ERROR",
+					slog.String("method", v.Method),
 					slog.String("uri", v.URI),
 					slog.Int("status", v.Status),
 					slog.String("err", v.Error.Error()),

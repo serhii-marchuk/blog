@@ -1,8 +1,11 @@
 :root {
+    --bc: #fff;
     --fc-main: #787878;
     --fc-navbar: #aaaaaa;
     --fc-active: #dc1414;
     --color-active-elem: #dc1414;
+
+    --fc-tile: #dc1414;
 }
 
 body {
@@ -54,11 +57,15 @@ body {
 }
 
 main {
+    display: flex;
+        align-items: center;
+        flex-flow: column;
     margin: 1em 2em 0 11.5em;
     width: 100vw;
 }
 
 main h1 {
+    color: var(--fc-tile);
     font-family: 'Comfortaa', sans-serif;
     font-weight: 700;
     font-size: 2em;
@@ -66,24 +73,11 @@ main h1 {
 }
 
 main h2 {
+    display: block;
     font-family: 'Comfortaa', sans-serif;
     font-weight: 700;
     font-size: 1.2em;
     margin: 0.5em 0;
-}
-
-.error_container {
-    display: flex;
-        justify-content: center;
-        align-items: center;
-    height: 100%;
-}
-
-.error_text {
-    color: #dc1414;
-    font-family: 'Comfortaa', sans-serif;
-    font-size: 2em;
-    font-weight: 700;
 }
 
 footer {
@@ -99,4 +93,71 @@ footer {
 
 footer a:hover svg {
     fill: #dc1414;
+}
+
+form {
+    min-width: 500px;
+    width: 80%;
+}
+
+.form_item {
+    margin-top: 1.5em;
+    position: relative;
+}
+
+.form_item > label {
+    background-color: var(--bc);
+    display: inline-block;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: .8em;
+    line-height: 1em;
+    padding: 0 .5em;
+    position: absolute;
+        left: 2em;
+        top: -.5em;
+}
+
+.form_item > label > span {
+    color: var(--fc-active);
+}
+
+.form_item > input, textarea {
+    border: 1px solid var(--fc-navbar);
+    border-radius: 5px;
+    color: var(--fc-main);
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 1em;
+    font-weight: 100;
+    line-height: 1.5em;
+    padding: .7em .7em .3em .7em;
+    width: -webkit-fill-available;
+}
+
+.form_item > input:focus, textarea:focus {
+    border: 2px solid var(--fc-active);;
+}
+
+.form_item > input:-webkit-autofill {
+    background-color: transparent !important;
+    -webkit-text-fill-color: var(--fc-main);
+    -webkit-box-shadow: 0 0 0 50px white inset;
+}
+
+input[type="submit"]:hover {
+    background-color: #fcc2c2;
+    border: 1px solid var(--fc-active);
+}
+
+.error_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.error_text {
+    color: #dc1414;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 2em;
+    font-weight: 700;
 }

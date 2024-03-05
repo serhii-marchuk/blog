@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/caarlos0/env/v10 v10.0.0
+	github.com/docker/distribution v2.8.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.4

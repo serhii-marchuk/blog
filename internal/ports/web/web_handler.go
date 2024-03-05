@@ -5,10 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/docker/distribution/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"github.com/serhii-marchuk/blog/internal/bootstrap/constructors"
+	"github.com/serhii-marchuk/blog/internal/models"
+	"gorm.io/gorm"
 	"net/http"
 	"time"
 )
@@ -16,15 +19,21 @@ import (
 type WebHandler struct {
 	Pages       []configs.NavItem
 	RedisClient *redis.Client
+	Db          *gorm.DB
 }
 
-func NewWebHandler(cfg *configs.WebCfg, rc *constructors.RedisClient) *WebHandler {
-	return &WebHandler{Pages: cfg.NavCfg.NavBar, RedisClient: rc.RC}
+func NewWebHandler(
+	cfg *configs.WebCfg,
+	rc *constructors.RedisClient,
+	db *constructors.Db,
+) *WebHandler {
+	return &WebHandler{Pages: cfg.NavCfg.NavBar, RedisClient: rc.RC, Db: db.DB}
 }
 
 func (h *WebHandler) Setup(e *echo.Echo) {
 	e.GET("/", h.Page)
 	e.GET("/:page", h.Page)
+	e.POST("/contact/form", h.HandleContactForm)
 	e.GET("/assets/:assetsFilePath", h.Assets)
 }
 
@@ -34,22 +43,13 @@ func (h *WebHandler) Page(c echo.Context) error {
 		page = "home"
 	}
 
-	for k, item := range h.Pages {
-		if item.Name == page {
-			h.Pages[k].Active = true
-		} else {
-			h.Pages[k].Active = false
-		}
-	}
-
-	return h.Render(c, http.StatusOK, page, map[string]interface{}{"pages": &h.Pages})
+	return h.Render(c, http.StatusOK, page)
 }
 
 func (h *WebHandler) Render(
 	c echo.Context,
 	code int,
 	name string,
-	data map[string]interface{},
 ) error {
 	rndr := c.Echo().Renderer
 	if rndr := c.Echo().Renderer; rndr == nil {
@@ -58,8 +58,17 @@ func (h *WebHandler) Render(
 
 	html, _ := h.RedisClient.Get(context.Background(), name).Bytes()
 	if html == nil {
+
+		for k, item := range h.Pages {
+			if item.Name == name {
+				h.Pages[k].Active = true
+			} else {
+				h.Pages[k].Active = false
+			}
+		}
+
 		buf := new(bytes.Buffer)
-		rndr.Render(buf, name, data, c)
+		rndr.Render(buf, name, map[string]interface{}{"pages": &h.Pages}, c)
 		err := h.RedisClient.Set(context.Background(), name, buf.Bytes(), time.Hour).Err()
 		if err != nil {
 			return err
@@ -73,4 +82,17 @@ func (h *WebHandler) Render(
 
 func (h *WebHandler) Assets(c echo.Context) error {
 	return c.File(fmt.Sprintf("web/assets/%s", c.Param("assetsFilePath")))
+}
+
+func (h *WebHandler) HandleContactForm(c echo.Context) error {
+	h.Db.Save(&models.ContactRequest{
+		ID:          uuid.Generate(),
+		FirstName:   c.FormValue("first_name"),
+		LastName:    c.FormValue("last_name"),
+		Email:       c.FormValue("email"),
+		Description: c.FormValue("description"),
+		Status:      "new",
+	})
+
+	return h.Render(c, http.StatusOK, "contact")
 }
