@@ -47,7 +47,6 @@ var commands = []*cli.Command{
 				fx.Provide(constructors.NewRedisClient),
 				fx.Provide(constructors.NewDb),
 				fx.Provide(web.NewWebServer),
-				fx.Provide(web.NewRenderer),
 				fx.Provide(webHandl.NewWebHandler),
 				fx.Invoke(
 					web.Setup,

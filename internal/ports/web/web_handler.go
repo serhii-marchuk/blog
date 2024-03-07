@@ -3,7 +3,6 @@ package web
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"github.com/docker/distribution/uuid"
 	"github.com/labstack/echo/v4"
@@ -12,11 +11,13 @@ import (
 	"github.com/serhii-marchuk/blog/internal/bootstrap/constructors"
 	"github.com/serhii-marchuk/blog/internal/models"
 	"gorm.io/gorm"
+	"html/template"
 	"net/http"
 	"time"
 )
 
 type WebHandler struct {
+	NavCfg      *configs.NavConfig
 	Pages       []configs.NavItem
 	RedisClient *redis.Client
 	Db          *gorm.DB
@@ -27,7 +28,12 @@ func NewWebHandler(
 	rc *constructors.RedisClient,
 	db *constructors.Db,
 ) *WebHandler {
-	return &WebHandler{Pages: cfg.NavCfg.NavBar, RedisClient: rc.RC, Db: db.DB}
+	return &WebHandler{
+		NavCfg:      cfg.NavCfg,
+		RedisClient: rc.RC,
+		Db:          db.DB,
+		Pages:       cfg.NavCfg.NavBar,
+	}
 }
 
 func (h *WebHandler) Setup(e *echo.Echo) {
@@ -49,35 +55,47 @@ func (h *WebHandler) Page(c echo.Context) error {
 func (h *WebHandler) Render(
 	c echo.Context,
 	code int,
-	name string,
+	pageName string,
 ) error {
-	rndr := c.Echo().Renderer
-	if rndr := c.Echo().Renderer; rndr == nil {
-		return errors.New("renderer not registered")
-	}
+	var html []byte
+	var err error
 
-	html, _ := h.RedisClient.Get(context.Background(), name).Bytes()
+	html, _ = h.RedisClient.Get(context.Background(), pageName).Bytes()
 	if html == nil {
-
-		for k, item := range h.Pages {
-			if item.Name == name {
-				h.Pages[k].Active = true
-			} else {
-				h.Pages[k].Active = false
-			}
-		}
-
-		buf := new(bytes.Buffer)
-		rndr.Render(buf, name, map[string]interface{}{"pages": &h.Pages}, c)
-		err := h.RedisClient.Set(context.Background(), name, buf.Bytes(), time.Hour).Err()
+		html, err = h.getPage(pageName)
 		if err != nil {
 			return err
 		}
-
-		return c.HTMLBlob(code, buf.Bytes())
 	}
 
 	return c.HTMLBlob(code, html)
+}
+
+func (h *WebHandler) getPage(pageName string) ([]byte, error) {
+	for k, item := range h.Pages {
+		if item.Name == pageName {
+			h.Pages[k].Active = true
+		} else {
+			h.Pages[k].Active = false
+		}
+	}
+	tmpl := template.Must(template.ParseFiles(
+		h.NavCfg.GetContentFileByPageName(pageName),
+		h.NavCfg.BaseTemplatePath),
+	)
+
+	buf := new(bytes.Buffer)
+	tmpErr := tmpl.ExecuteTemplate(buf, "base", map[string]interface{}{"pages": &h.Pages})
+	if tmpErr != nil {
+		return nil, tmpErr
+	}
+
+	rdsErr := h.RedisClient.Set(context.Background(), pageName, buf.Bytes(), 24*time.Hour).Err()
+	if rdsErr != nil {
+		return nil, rdsErr
+	}
+
+	return buf.Bytes(), nil
 }
 
 func (h *WebHandler) Assets(c echo.Context) error {

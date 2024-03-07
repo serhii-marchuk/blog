@@ -9,7 +9,6 @@ import (
 	"github.com/serhii-marchuk/blog/internal/bootstrap/configs"
 	"github.com/serhii-marchuk/blog/internal/ports/web"
 	"go.uber.org/fx"
-	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
@@ -22,19 +21,9 @@ func NewWebServer() *echo.Echo {
 
 func Setup(
 	e *echo.Echo,
-	r *TemplateRenderer,
 	h *web.WebHandler,
-	webCfg *configs.WebCfg,
 ) {
 	e.HideBanner = true
-
-	for _, item := range webCfg.NavCfg.NavBar {
-		r.AddTemplate(
-			item.Name,
-			template.Must(template.ParseFiles(item.ContentFile, webCfg.NavCfg.BaseTemplatePath)),
-		)
-	}
-
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus:   true,
@@ -61,7 +50,6 @@ func Setup(
 		},
 	}))
 
-	e.Renderer = r
 	h.Setup(e)
 }
 
