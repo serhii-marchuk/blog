@@ -41,7 +41,17 @@ func NewNavConfig() *NavConfig {
 	return cfg
 }
 
-func (nc *NavConfig) GetErrorPageFile(name string) string {
+func (nc *NavConfig) GetContentFileByPageName(name string) string {
+	for _, item := range nc.NavBar {
+		if item.Name == name {
+			return item.ContentFile
+		}
+	}
+
+	return nc.getErrorPageFile("404")
+}
+
+func (nc *NavConfig) getErrorPageFile(name string) string {
 	for _, page := range nc.ErrorPages {
 		if page.Name == name {
 			return page.ContentFile
