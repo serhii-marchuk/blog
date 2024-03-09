@@ -24,10 +24,9 @@ var commands = []*cli.Command{
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			l := web.NewAppLogger()
 			cfg := configs.NewConfigs()
 			d := cCtx.String("direction")
-			bootstrap.NewMigrator(d).RunDbMigration(&cfg.Database, l)
+			bootstrap.NewMigrator(d).RunDbMigration(&cfg.Database)
 
 			return nil
 		},
@@ -43,9 +42,10 @@ var commands = []*cli.Command{
 				fx.Provide(func() *configs.WebCfg {
 					return configs.NewWebCfg()
 				}),
-				fx.Provide(web.NewAppLogger),
+				fx.Provide(constructors.NewLogger),
 				fx.Provide(constructors.NewRedisClient),
 				fx.Provide(constructors.NewDb),
+				fx.Provide(constructors.NewRenderer),
 				fx.Provide(web.NewWebServer),
 				fx.Provide(webHandl.NewWebHandler),
 				fx.Invoke(

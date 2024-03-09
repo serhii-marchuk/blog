@@ -1,0 +1,7 @@
+<ul>
+    {{range .Items}}
+        <li class="{{ .ClassName }}">
+            <a href={{ .Uri }}>{{ .Name }}</a>
+        </li>
+    {{end}}
+</ul>
