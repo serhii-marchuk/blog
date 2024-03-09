@@ -23,7 +23,7 @@ body {
     min-height: calc(100vh - 3.4em);
 }
 
-.navbar {
+.nav {
     display: flex;
         flex-flow: column nowrap;
     font-family: 'Roboto', sans-serif;
@@ -35,24 +35,30 @@ body {
         top: 0;
 }
 
-.navbar a {
+.nav__item {
+    display: block;
+}
+
+.nav__item a {
     border-left: 3px solid rgba(255,255,255, 1);
     color: var(--fc-navbar);
     text-decoration: none;
     padding: 0 .5em;
 }
 
-.navbar .active_page {
-    border-left: 3px solid var(--fc-main);
-    color: var(--fc-main);
-    font-weight: 500;
+.nav__item.active {
     margin: .6em 0;
 }
 
-.navbar a:hover {
+.nav__item.active a {
+    border-left: 3px solid var(--fc-main);
+    color: var(--fc-main);
+    font-weight: 500;
+}
+
+.nav__item a:hover {
     border-left: 3px solid var(--fc-active);
     color: var(--fc-active);
-    text-decoration: none;
     cursor: pointer;
 }
 
@@ -78,6 +84,10 @@ main h2 {
     font-weight: 700;
     font-size: 1.2em;
     margin: 0.5em 0;
+}
+
+.widgets {
+    font-weight: 300;
 }
 
 footer {
